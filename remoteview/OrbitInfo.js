@@ -29,6 +29,7 @@ function drawEllipse(ctx, x0, y0, a, exc, lineWidth, color) {
 	ctx.closePath();
 	ctx.stroke();
 }
+
 function drawApAndPe(ctx,a,apIcon,peIcon) {
 	//Pe
 	x = a; //center icon
@@ -88,7 +89,6 @@ function onClose(evt)
 
 function onMessage(evt)
 {
-	//writeToScreen(evt.data, "#OrbitInfo");
 	var parsedJSON = $.parseJSON(evt.data);
 	update(parsedJSON);		
 }
@@ -175,13 +175,26 @@ function getVBodyRadius(vbody)
 	}
 }
 
-function updateInfoPanel(data) {
+function updateBars(data) {
+	var pctLiquidFuel = (data["r.resource[LiquidFuel]"] / data["r.resourceMax[LiquidFuel]"])*100;
+	var pctOxidizer = (data["r.resource[Oxidizer]"] / data["r.resourceMax[Oxidizer]"])*100;
+	var pctMonoPropellant = (data["r.resource[MonoPropellant]"] / data["r.resourceMax[MonoPropellant]"])*100;
+
+	document.getElementById("pctLiquidFuel").setAttribute("style","width:"+pctLiquidFuel+"%");
+	document.getElementById("pctOxidizer").setAttribute("style","width:"+pctOxidizer+"%");
+	document.getElementById("pctMonoPropellant").setAttribute("style","width:"+pctMonoPropellant+"%");
+	/*
+	writeToScreen(pctLiquidFuel,"#pctLiquidFuel");
+	writeToScreen(pctOxidizer,"#pctOxidizer");
+	writeToScreen(pctMonoPropellant,"#pctMonoPropellant");
+	*/
 	writeToScreen(data["r.resource[LiquidFuel]"].toFixed() + " / " + data["r.resourceMax[LiquidFuel]"].toFixed(), "#LiquidFuel");
 	writeToScreen(data["r.resource[Oxidizer]"].toFixed() + " / " + data["r.resourceMax[Oxidizer]"].toFixed(), "#Oxidizer");
 	writeToScreen(data["r.resource[MonoPropellant]"].toFixed() + " / "  +data["r.resourceMax[MonoPropellant]"].toFixed(), "#MonoPropellant");
+
 }
 
-function updateBars(data) {
+function updateInfoPanel(data) {
 	writeToScreen(data["v.orbitalVelocity"].toFixed() + " m/s", "#OrbitalSpeed");
 	writeToScreen(data["o.ApA"].toFixed(), "#Apoapsis");
 	writeToScreen(data["o.PeA"].toFixed(), "#Periapsis");
@@ -267,9 +280,7 @@ function update(data)
 	drawShip(data);
 }
 
-window.addEventListener("load", init, false);
 function switchButton(what) {
-	var Element = document.getElementById(what);
 	switch (what)
 	{
 	case 'RCS':
@@ -283,3 +294,5 @@ function switchButton(what) {
 		break;
 	}
 }
+
+window.addEventListener("load", init, false);
