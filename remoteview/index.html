@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Orbit Info</title>
+<link rel="stylesheet" href="style.css">
+<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+<script src="OrbitInfo.js"></script>
+</head>
+<body>
+<div class="BigScreen" id="Screen">
+	<canvas id="Canvas" height="800" width="800"></canvas>
+	<div id="Status">test</div>
+	<div id="OrbitInfo">
+		<h1>Orbit Info</h1>
+		<div id="results">
+			<div class="item" id="ItemOrbitalSpeed">Orbital Speed :</div> 
+			<div class="value" id="OrbitalSpeed"></div>
+			
+			<div class="item" id="ItemApoapsis">Apoapsis :</div> 
+			<div class="value" id="Apoapsis"></div>
+			
+			<div class="item" id="ItemPeriapsis">Periapsis :</div> 
+			<div class="value" id="Periapsis"></div>
+			
+			<div class="item" id="ItemOrbitalPeriod">Orbital period :</div> 
+			<div class="value" id="OrbitalPeriod"></div>
+			
+			<div class="item" id="ItemTimeToApoapsis">Time to apoapsis :</div> 
+			<div class="value" id="TimeToApoapsis"></div>
+			
+			<div class="item" id="ItemTimeToPeriapsis">Time to Periapsis :</div> 
+			<div class="value" id="TimeToPeriapsis"></div>
+			
+			<div class="item" id="ItemInclination">Inclination :</div> 
+			<div class="value" id="Inclination"></div>
+			
+			<div class="item" id="ItemEccentricity">Eccentricity : </div> 
+			<div class="value" id="Eccentricity"></div>
+			
+			<div class="item" id="ItemAngleToPrograde">Angle to prograde :</div> 
+			<div class="value" id="AngleToPrograde"></div>
+			
+			<div class="item" id="ItemTrueAnomaly">True Anomaly :</div> 
+			<div class="value" id="TrueAnomaly"></div>
+		</div>
+	</div>
+	<div id="ButtonPanel">
+		<div class="Button"><div id="SAS" onclick="switchButton('SAS')"></div></div>
+		<div class="Button"><div id="RCS" onclick="switchButton('RCS')"></div></div>
+		<div class="Button"><div id="Light" onclick="switchButton('Light')"></div></div>
+	</div>
+	<div id="BarsPanel">
+		<div class="progress-bar">
+			<span style="width: 10%"></span>
+		</div>
+	</div>
+</div>
+</script>
+</html>

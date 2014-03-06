@@ -1,0 +1,167 @@
+body{ 
+background-color: #282828;
+font-family: FixedSys;
+}
+
+#Screen {
+width: 1140px;
+height: 820px;
+}
+/*
+Status Panel
+*/
+#Status {
+width: 250px;
+height: auto;
+color: YellowGreen;
+padding: 20px;
+margin: 5px;
+border: 5px outset white;
+background-color: black;
+border-radius: 30px;
+float: right;
+}
+
+/*
+Orbit info Panel
+*/
+#OrbitInfo {
+width: 250px;
+height: auto;
+padding: 20px;
+margin: 5px;
+color: YellowGreen;
+border: 5px outset white;
+background-color: black;
+border-radius: 30px;
+float: right;
+}
+
+#OrbitInfo h1
+{
+font-size: 12px;
+color: YellowGreen;
+text-align: center;
+border-radius: 5px;
+border: 1px inset white;
+}
+
+.item {
+position: relative;
+float: left;
+width: 170px;
+color: LightBlue;
+}
+.value {
+position: relative;
+float: right;
+}
+
+
+/*
+map
+*/
+
+#Canvas {
+color: YellowGreen;
+margin: 5px;
+width: 800px;
+height: 800px;
+border: 5px outset white;
+background-color: black;
+border-radius: 30px;
+float: left;
+}
+
+/* 
+Button Panel
+*/
+#ButtonPanel {
+width: 250px;
+height: auto;
+padding: 20px;
+margin: 5px;
+color: YellowGreen;
+border: 5px outset white;
+background-color: black;
+border-radius: 30px;
+float: right;
+}
+
+.Button {
+background-color: black;
+margin: 9px;
+width: 64px;
+height: 64px;
+float: right;
+box-shadow: 0 0 20px 2px black;
+}
+
+#SAS {
+background-image: url(images/SwitchIcons.png);
+background-position: 0 -192px;
+cursor: pointer;
+width: 64px;
+height: 64px;
+float: right;
+border-radius: 5px;
+border: 1px inset white;
+}
+
+#RCS {
+background-image: url(images/SwitchIcons.png);
+background-position: 0 -128px;
+cursor: pointer;
+width: 64px;
+height: 64px;
+float: right;
+border-radius: 5px;
+border: 1px inset white;
+}
+
+#Light {
+background-image: url(images/SwitchIcons.png);
+background-position: 0 -64px;
+cursor: pointer;
+width: 64px;
+height: 64px;
+float: right;
+border-radius: 5px;
+border: 1px inset white;
+}
+
+/*
+Progress bars
+*/
+#BarsPanel {
+width: 250px;
+height: auto;
+padding: 20px;
+margin: 5px;
+color: YellowGreen;
+border: 5px outset white;
+background-color: black;
+border-radius: 30px;
+float: right;
+}
+
+.progress-bar {
+background-color: black;
+height: 10px;
+padding: 3px;
+width: 75%;
+float: right;
+border-radius: 5px;
+border: 1px inset white;
+box-shadow: 0 1px 5px white inset; 
+}
+
+.progress-bar span {
+display: inline-block;
+background-color: yellowgreen; 
+height: 100%;
+border-radius: 3px;
+box-shadow: 0 2px 0 black inset;
+transition: width .4s ease-in-out; 
+}
+
