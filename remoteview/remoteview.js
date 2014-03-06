@@ -1,7 +1,8 @@
-var wsUri = "ws://192.168.0.25:8085/datalink";
-var maxRadius = 300;
-
-var light = 'True', RCS = 'True', SAS = 'True';
+/*
+for infos https://github.com/Deedo/RemoteView
+*/
+var wsUri = "ws://127.0.0.1:8085/datalink"; //You can put an IP here
+var maxRadius = 300; // used for the map
 
 /* draw ellipse
 * x0,y0 = center of the ellipse
@@ -30,6 +31,9 @@ function drawEllipse(ctx, x0, y0, a, exc, lineWidth, color) {
 	ctx.stroke();
 }
 
+/*
+draw Pe and Ap icons
+*/
 function drawApAndPe(ctx,a,apIcon,peIcon) {
 	//Pe
 	x = a; //center icon
@@ -41,13 +45,16 @@ function drawApAndPe(ctx,a,apIcon,peIcon) {
 	ctx.drawImage(apIcon, x, y);
 }
 
+/*
+convert readable time format
+*/
 function seconds2time (seconds) {
 	var hours   = Math.floor(seconds / 3600);
 	var minutes = Math.floor((seconds - (hours * 3600)) / 60);
 	var seconds = seconds - (hours * 3600) - (minutes * 60);
 	var time = "";
 	if (hours == 0) {
-		time = "00:";
+		time = "00:"; // always prefixed with hours
 	} 
 	else {
 		time = hours+":";
@@ -65,6 +72,9 @@ function seconds2time (seconds) {
 	return time;
 }
 
+/*
+Load some graphics and open websocket
+*/
 function init()
 {
 	shipImage = new Image();
@@ -82,22 +92,34 @@ function init()
 	
 }
 
+/*
+Report connection closed
+*/
 function onClose(evt)
 {
 	writeToScreen("Connection lost", "#Status");
 }
 
+/*
+Reports errors
+*/
+function onError(evt)
+{
+	writeToScreen(evt.data, "#Status");
+}
+
+/*
+Parse the received data
+*/
 function onMessage(evt)
 {
 	var parsedJSON = $.parseJSON(evt.data);
 	update(parsedJSON);		
 }
 
-function onError(evt)
-{
-	writeToScreen(evt.data, "#Status");
-}
-
+/*
+Subscribe to websocket
+*/
 function doSubscribe() {
 	writeToScreen("Connected", "#Status");
 	doSend(JSON.stringify({ "+": ["v.orbitalVelocity", "o.ApA", "o.PeA", "o.period", "o.timeToAp", "o.timeToPe", "o.inclination", "o.eccentricity", "v.angleToPrograde", "v.body", "o.trueAnomaly"], "rate": 100}));
@@ -107,16 +129,26 @@ function doSubscribe() {
 	doSend(JSON.stringify({ "+": ["r.resource[Oxidizer]","r.resource[LiquidFuel]","r.resource[MonoPropellant]"], "rate": 100}));
 }
 
+/*
+send something on the wire
+*/
 function doSend(message)
 {
 	websocket.send(message);
 }
 
+/*
+put content in a div
+*/
 function writeToScreen(message, theDiv)
 {
 	$(theDiv).html(message);
 }
 
+/*
+Get radius of KSP bodies
+TODO : must be an other way to do it...
+*/
 function getVBodyRadius(vbody)
 {
 	switch (vbody)
@@ -175,6 +207,9 @@ function getVBodyRadius(vbody)
 	}
 }
 
+/*
+Update resources bars
+*/
 function updateBars(data) {
 	var pctLiquidFuel = (data["r.resource[LiquidFuel]"] / data["r.resourceMax[LiquidFuel]"])*100;
 	var pctOxidizer = (data["r.resource[Oxidizer]"] / data["r.resourceMax[Oxidizer]"])*100;
@@ -183,17 +218,16 @@ function updateBars(data) {
 	document.getElementById("pctLiquidFuel").setAttribute("style","width:"+pctLiquidFuel+"%");
 	document.getElementById("pctOxidizer").setAttribute("style","width:"+pctOxidizer+"%");
 	document.getElementById("pctMonoPropellant").setAttribute("style","width:"+pctMonoPropellant+"%");
-	/*
-	writeToScreen(pctLiquidFuel,"#pctLiquidFuel");
-	writeToScreen(pctOxidizer,"#pctOxidizer");
-	writeToScreen(pctMonoPropellant,"#pctMonoPropellant");
-	*/
+
 	writeToScreen(data["r.resource[LiquidFuel]"].toFixed() + " / " + data["r.resourceMax[LiquidFuel]"].toFixed(), "#LiquidFuel");
 	writeToScreen(data["r.resource[Oxidizer]"].toFixed() + " / " + data["r.resourceMax[Oxidizer]"].toFixed(), "#Oxidizer");
 	writeToScreen(data["r.resource[MonoPropellant]"].toFixed() + " / "  +data["r.resourceMax[MonoPropellant]"].toFixed(), "#MonoPropellant");
 
 }
 
+/*
+Update Orbit info box
+*/
 function updateInfoPanel(data) {
 	writeToScreen(data["v.orbitalVelocity"].toFixed() + " m/s", "#OrbitalSpeed");
 	writeToScreen(data["o.ApA"].toFixed(), "#Apoapsis");
@@ -207,6 +241,9 @@ function updateInfoPanel(data) {
 	writeToScreen(data["o.trueAnomaly"].toFixed(2), "#TrueAnomaly");
 }
 
+/*
+update button status
+*/
 function updateButtons(data) {
 	var lightElement = document.getElementById('Light');
 	var RCSElement = document.getElementById('RCS');
@@ -233,6 +270,10 @@ function updateButtons(data) {
 		SASElement.style.opacity = "0.25";
 	}
 }
+
+/*
+Draw the nice map !
+*/
 function drawMap(data) {
 	var canvas = document.getElementById('Canvas');
 	var context = canvas.getContext('2d');
@@ -244,23 +285,22 @@ function drawMap(data) {
 	context.clearRect(0, 0, canvas.width, canvas.height);
 	context.save();
 	context.translate(canvas.width / 2, canvas.height / 2);
-
 	//Orbit
 	drawEllipse(context,0,0,maxRadius,data["o.eccentricity"],1,"YellowGreen");
 	drawApAndPe(context,maxRadius,apImage,peImage);
-	
 	//Orbited Body
 	drawEllipse(context,data["o.eccentricity"] * maxRadius,0,bodySize,0,0.5,"LightBlue");
 	//Ship
 	drawShip(context,0,0,maxRadius,data["o.eccentricity"],shipAngle,shipImage);
-	
+	//Small info text
 	context.font = "12px FixedSys";
 	context.fillStyle = "LightBlue";
-	
 	context.fillText("Orbiting " + data["v.body"], 0.80 * maxRadius,1.25 * maxRadius);
 	context.restore();
 }
-
+/*
+draw the ship on the map
+*/
 function drawShip(ctx, x0, y0, a, exc, angle, icon)
 {
 	x0 += a * exc;
@@ -271,6 +311,9 @@ function drawShip(ctx, x0, y0, a, exc, angle, icon)
 	ctx.drawImage(icon, x, y);
 }
 
+/*
+meta-update
+*/
 function update(data)
 {
 	updateInfoPanel(data);
@@ -280,6 +323,9 @@ function update(data)
 	drawShip(data);
 }
 
+/*
+onClick RCS-SAS-Light
+*/
 function switchButton(what) {
 	switch (what)
 	{

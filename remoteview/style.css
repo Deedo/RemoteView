@@ -19,7 +19,7 @@ margin: 5px;
 border: 5px outset white;
 background-color: black;
 border-radius: 30px;
-float: right;
+float: left;
 }
 
 /*
@@ -34,7 +34,7 @@ color: YellowGreen;
 border: 5px outset white;
 background-color: black;
 border-radius: 30px;
-float: right;
+float: left;
 }
 
 #OrbitInfo h1
@@ -84,7 +84,7 @@ color: YellowGreen;
 border: 5px outset white;
 background-color: black;
 border-radius: 30px;
-float: right;
+float: left;
 }
 
 .Button {
@@ -140,7 +140,7 @@ color: YellowGreen;
 border: 5px outset white;
 background-color: black;
 border-radius: 30px;
-float: right;
+float: left;
 }
 #BarsPanel h1
 {
