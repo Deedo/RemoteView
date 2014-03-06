@@ -98,7 +98,7 @@ box-shadow: 0 0 20px 2px black;
 
 #SAS {
 background-image: url(images/SwitchIcons.png);
-background-position: 0 -192px;
+background-position: 0 -128px;
 cursor: pointer;
 width: 64px;
 height: 64px;
@@ -109,7 +109,7 @@ box-shadow: 0 1px 5px white inset;
 
 #RCS {
 background-image: url(images/SwitchIcons.png);
-background-position: 0 -128px;
+background-position: 0 -64px;
 cursor: pointer;
 width: 64px;
 height: 64px;
@@ -120,7 +120,6 @@ box-shadow: 0 1px 5px white inset;
 
 #Light {
 background-image: url(images/SwitchIcons.png);
-background-position: 0 -64px;
 cursor: pointer;
 width: 64px;
 height: 64px;
