@@ -102,6 +102,9 @@ function doSubscribe() {
 	writeToScreen("Connected", "#Status");
 	doSend(JSON.stringify({ "+": ["v.orbitalVelocity", "o.ApA", "o.PeA", "o.period", "o.timeToAp", "o.timeToPe", "o.inclination", "o.eccentricity", "v.angleToPrograde", "v.body", "o.trueAnomaly"], "rate": 100}));
 	doSend(JSON.stringify({ "+": ["v.name","v.lightValue","v.sasValue","v.rcsValue"], "rate": 100}));
+	doSend(JSON.stringify({ "+": ["v.name","v.lightValue","v.sasValue","v.rcsValue"], "rate": 100}));
+	doSend(JSON.stringify({ "+": ["r.resourceMax[Oxidizer]","r.resourceMax[LiquidFuel]","r.resourceMax[MonoPropellant]", "rate": 100}));
+	doSend(JSON.stringify({ "+": ["r.resourceCurrent[Oxidizer]","r.resourceCurrent[LiquidFuel]","r.resourceCurrent[MonoPropellant]", "rate": 100}));
 }
 
 function doSend(message)
@@ -173,6 +176,12 @@ function getVBodyRadius(vbody)
 }
 
 function updateInfoPanel(data) {
+	writeToScreen(data["r.resourceCurrent[LiquidFuel]"] + " / " + data["r.resourceMax[LiquidFuel]"], "#LiquidFuel");
+	writeToScreen(data["r.resourceCurrent[Oxidizer]"] + " / " + data["r.resourceMax[Oxidizer]"], "#Oxidizer");
+	writeToScreen(data["r.resourceCurrent[MonoPropellant]"] + " / "  +data["r.resourceMax[MonoPropellant]"], "#MonoPropellant");
+}
+
+function updateBars(data) {
 	writeToScreen(data["v.orbitalVelocity"].toFixed() + " m/s", "#OrbitalSpeed");
 	writeToScreen(data["o.ApA"].toFixed(), "#Apoapsis");
 	writeToScreen(data["o.PeA"].toFixed(), "#Periapsis");
@@ -184,6 +193,7 @@ function updateInfoPanel(data) {
 	writeToScreen(data["v.angleToPrograde"].toFixed(2), "#AngleToPrograde");
 	writeToScreen(data["o.trueAnomaly"].toFixed(2), "#TrueAnomaly");
 }
+
 function updateButtons(data) {
 	var lightElement = document.getElementById('Light');
 	var RCSElement = document.getElementById('RCS');
@@ -252,6 +262,7 @@ function update(data)
 {
 	updateInfoPanel(data);
 	updateButtons(data);
+	updateBars(data);
 	drawMap(data);
 	drawShip(data);
 }

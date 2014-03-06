@@ -43,7 +43,6 @@ font-size: 12px;
 color: YellowGreen;
 text-align: center;
 border-radius: 5px;
-border: 1px inset white;
 }
 
 .item {
@@ -105,7 +104,7 @@ width: 64px;
 height: 64px;
 float: right;
 border-radius: 5px;
-border: 1px inset white;
+box-shadow: 0 1px 5px white inset; 
 }
 
 #RCS {
@@ -116,7 +115,7 @@ width: 64px;
 height: 64px;
 float: right;
 border-radius: 5px;
-border: 1px inset white;
+box-shadow: 0 1px 5px white inset; 
 }
 
 #Light {
@@ -127,7 +126,7 @@ width: 64px;
 height: 64px;
 float: right;
 border-radius: 5px;
-border: 1px inset white;
+box-shadow: 0 1px 5px white inset; 
 }
 
 /*
@@ -144,12 +143,33 @@ background-color: black;
 border-radius: 30px;
 float: right;
 }
+#BarsPanel h1
+{
+width: 250px;
+font-size: 12px;
+color: YellowGreen;
+text-align: center;
+border-radius: 5px;
+}
+#BarsPanel .item
+{
+text-align: center;
+width: 250px;
+margin-top: 15px;
+margin-bottom: 5px;
+}
+#BarsPanel .value {
+position: relative;
+width: 250px;
+text-align: center;
+}
 
 .progress-bar {
 background-color: black;
 height: 10px;
 padding: 3px;
-width: 75%;
+margin-bottom: 3px;
+width: 100%;
 float: right;
 border-radius: 5px;
 border: 1px inset white;

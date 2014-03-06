@@ -9,39 +9,39 @@
 <body>
 <div class="BigScreen" id="Screen">
 	<canvas id="Canvas" height="800" width="800"></canvas>
-	<div id="Status">test</div>
+	<div id="Status">Offline</div>
 	<div id="OrbitInfo">
 		<h1>Orbit Info</h1>
 		<div id="results">
 			<div class="item" id="ItemOrbitalSpeed">Orbital Speed :</div> 
-			<div class="value" id="OrbitalSpeed"></div>
+			<div class="value" id="OrbitalSpeed">No data</div>
 			
 			<div class="item" id="ItemApoapsis">Apoapsis :</div> 
-			<div class="value" id="Apoapsis"></div>
+			<div class="value" id="Apoapsis">No data</div>
 			
 			<div class="item" id="ItemPeriapsis">Periapsis :</div> 
-			<div class="value" id="Periapsis"></div>
+			<div class="value" id="Periapsis">No data</div>
 			
 			<div class="item" id="ItemOrbitalPeriod">Orbital period :</div> 
-			<div class="value" id="OrbitalPeriod"></div>
+			<div class="value" id="OrbitalPeriod">No data</div>
 			
 			<div class="item" id="ItemTimeToApoapsis">Time to apoapsis :</div> 
-			<div class="value" id="TimeToApoapsis"></div>
+			<div class="value" id="TimeToApoapsis">No data</div>
 			
 			<div class="item" id="ItemTimeToPeriapsis">Time to Periapsis :</div> 
-			<div class="value" id="TimeToPeriapsis"></div>
+			<div class="value" id="TimeToPeriapsis">No data</div>
 			
 			<div class="item" id="ItemInclination">Inclination :</div> 
-			<div class="value" id="Inclination"></div>
+			<div class="value" id="Inclination">No data</div>
 			
 			<div class="item" id="ItemEccentricity">Eccentricity : </div> 
-			<div class="value" id="Eccentricity"></div>
+			<div class="value" id="Eccentricity">No data</div>
 			
 			<div class="item" id="ItemAngleToPrograde">Angle to prograde :</div> 
-			<div class="value" id="AngleToPrograde"></div>
+			<div class="value" id="AngleToPrograde">No data</div>
 			
 			<div class="item" id="ItemTrueAnomaly">True Anomaly :</div> 
-			<div class="value" id="TrueAnomaly"></div>
+			<div class="value" id="TrueAnomaly">No data</div>
 		</div>
 	</div>
 	<div id="ButtonPanel">
@@ -50,9 +50,22 @@
 		<div class="Button"><div id="Light" onclick="switchButton('Light')"></div></div>
 	</div>
 	<div id="BarsPanel">
+		<h1>Resources Panel</h1>
+		<div class="item" id="ItemLiquidFuel">Liquid Fuel</div>
 		<div class="progress-bar">
-			<span style="width: 10%"></span>
+			<span style="width: 100%"></span>
 		</div>
+		<div class="value" id="LiquidFuel">No data</div>
+		<div class="item" id="ItemOxidizer">Oxidizer</div> 
+		<div class="progress-bar">
+			<span style="width: 100%"></span>
+		</div>
+		<div class="value" id="Oxidizer">No data</div>
+		<div class="item" id="ItemMonoPropellant">Mono Propellant</div> 
+		<div class="progress-bar">
+			<span style="width: 100%"></span>
+		</div>
+		<div class="value" id="MonoPropellant">No data</div>
 	</div>
 </div>
 </script>
