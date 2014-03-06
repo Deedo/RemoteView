@@ -103,8 +103,8 @@ function doSubscribe() {
 	doSend(JSON.stringify({ "+": ["v.orbitalVelocity", "o.ApA", "o.PeA", "o.period", "o.timeToAp", "o.timeToPe", "o.inclination", "o.eccentricity", "v.angleToPrograde", "v.body", "o.trueAnomaly"], "rate": 100}));
 	doSend(JSON.stringify({ "+": ["v.name","v.lightValue","v.sasValue","v.rcsValue"], "rate": 100}));
 	doSend(JSON.stringify({ "+": ["v.name","v.lightValue","v.sasValue","v.rcsValue"], "rate": 100}));
-	doSend(JSON.stringify({ "+": ["r.resourceMax[Oxidizer]","r.resourceMax[LiquidFuel]","r.resourceMax[MonoPropellant]", "rate": 100}));
-	doSend(JSON.stringify({ "+": ["r.resourceCurrent[Oxidizer]","r.resourceCurrent[LiquidFuel]","r.resourceCurrent[MonoPropellant]", "rate": 100}));
+	doSend(JSON.stringify({ "+": ["r.resourceMax[Oxidizer]","r.resourceMax[LiquidFuel]","r.resourceMax[MonoPropellant]"], "rate": 100}));
+	doSend(JSON.stringify({ "+": ["r.resource[Oxidizer]","r.resource[LiquidFuel]","r.resource[MonoPropellant]"], "rate": 100}));
 }
 
 function doSend(message)
@@ -176,9 +176,9 @@ function getVBodyRadius(vbody)
 }
 
 function updateInfoPanel(data) {
-	writeToScreen(data["r.resourceCurrent[LiquidFuel]"] + " / " + data["r.resourceMax[LiquidFuel]"], "#LiquidFuel");
-	writeToScreen(data["r.resourceCurrent[Oxidizer]"] + " / " + data["r.resourceMax[Oxidizer]"], "#Oxidizer");
-	writeToScreen(data["r.resourceCurrent[MonoPropellant]"] + " / "  +data["r.resourceMax[MonoPropellant]"], "#MonoPropellant");
+	writeToScreen(data["r.resource[LiquidFuel]"].toFixed() + " / " + data["r.resourceMax[LiquidFuel]"].toFixed(), "#LiquidFuel");
+	writeToScreen(data["r.resource[Oxidizer]"].toFixed() + " / " + data["r.resourceMax[Oxidizer]"].toFixed(), "#Oxidizer");
+	writeToScreen(data["r.resource[MonoPropellant]"].toFixed() + " / "  +data["r.resourceMax[MonoPropellant]"].toFixed(), "#MonoPropellant");
 }
 
 function updateBars(data) {
