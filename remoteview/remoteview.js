@@ -80,9 +80,11 @@ function init()
 	shipImage = new Image();
 	apImage = new Image();
 	peImage = new Image();
+	targetImage = new Image();
 	shipImage.src = './icons/ship.png';
 	apImage.src = './icons/ap.png';
 	peImage.src = './icons/pe.png';
+	targetImage.src = './icons/target.png';
     writeToScreen("Connecting to "+wsUri, "#Status");
 	websocket = new WebSocket(wsUri); 
 	websocket.onopen = function (evt) { doSubscribe() };
@@ -113,6 +115,7 @@ Parse the received data
 */
 function onMessage(evt)
 {
+	//writeToScreen(evt.data, "#Status");
 	var parsedJSON = $.parseJSON(evt.data.replace(":nan,",":-1,")); // Seriously ? At least parsedJSON does not complain anymore...
 	update(parsedJSON);		
 }
@@ -122,11 +125,15 @@ Subscribe to websocket
 */
 function doSubscribe() {
 	writeToScreen("Connected", "#Status");
-	doSend(JSON.stringify({ "+": ["v.orbitalVelocity", "o.ApA", "o.PeA", "o.period", "o.timeToAp", "o.timeToPe", "o.inclination", "o.eccentricity", "v.angleToPrograde", "v.body", "o.trueAnomaly"], "rate": 100}));
+	//My orbit stuff
+	doSend(JSON.stringify({ "+": ["v.orbitalVelocity", "o.ApA", "o.PeA", "o.period", "o.timeToAp", "o.timeToPe", "o.inclination", "o.eccentricity", "v.angleToPrograde", "v.body", "o.trueAnomaly","o.argumentOfPeriapsis"], "rate": 100}));
+	//Target
+	doSend(JSON.stringify({ "+": ["tar.o.trueAnomaly", "tar.o.sma", "tar.o.orbitingBody","tar.o.eccentricity","tar.o.argumentOfPeriapsis"]}));
+	//Button
 	doSend(JSON.stringify({ "+": ["v.name","v.lightValue","v.sasValue","v.rcsValue"], "rate": 100}));
-	doSend(JSON.stringify({ "+": ["v.name","v.lightValue","v.sasValue","v.rcsValue"], "rate": 100}));
-	doSend(JSON.stringify({ "+": ["r.resourceMax[Oxidizer]","r.resourceMax[LiquidFuel]","r.resourceMax[MonoPropellant]","r.resourceMax[ElectricCharge]"], "rate": 100}));
-	doSend(JSON.stringify({ "+": ["r.resource[Oxidizer]","r.resource[LiquidFuel]","r.resource[MonoPropellant]","r.resource[ElectricCharge]"], "rate": 100}));
+	//resources
+	doSend(JSON.stringify({ "+": ["r.resourceMax[Oxidizer]","r.resourceMax[LiquidFuel]","r.resourceMax[MonoPropellant]","r.resourceMax[ElectricCharge]"]}));
+	doSend(JSON.stringify({ "+": ["r.resource[Oxidizer]","r.resource[LiquidFuel]","r.resource[MonoPropellant]","r.resource[ElectricCharge]"]}));
 }
 
 /*
@@ -242,6 +249,15 @@ function updateInfoPanel(data) {
 	writeToScreen(data["v.angleToPrograde"].toFixed(2) + " &deg", "#AngleToPrograde");
 	writeToScreen(data["o.trueAnomaly"].toFixed(2) + " &deg", "#TrueAnomaly");
 }
+/*
+Update Target Panel
+*/
+function updateTargetPanel(data) {
+	writeToScreen(data["tar.o.trueAnomaly"].toFixed(3), "#TargetTrueAnomaly");
+	writeToScreen(data["tar.o.sma"], "#TargetSMA");
+	writeToScreen(data["tar.o.orbitingBody"], "#TargetOrbitingBody");
+	writeToScreen(data["tar.o.eccentricity"], "#TargetEccentricity");
+}
 
 /*
 update button status
@@ -295,18 +311,27 @@ function drawMap(data) {
 		context.translate(canvas.width / 2, canvas.height / 2); // Center on orbit center
 		//Orbit
 		drawEllipse(context,0,0,maxRadius,data["o.eccentricity"],1,"YellowGreen");
-		drawApAndPe(context,maxRadius,apImage,peImage);
-		//Orbited Body
-		drawEllipse(context,data["o.eccentricity"] * maxRadius,0,bodySize,0,0.5,"LightBlue");
 		//Ship
-		drawShip(context,0,0,maxRadius,data["o.eccentricity"],shipAngle,shipImage);
+		drawObject(context,0,0,maxRadius,data["o.eccentricity"],shipAngle,shipImage);
+		//Target Only if orbiting the same object
+		if (data["tar.o.orbitingBody"] == data["v.body"]) {
+				var targetAngle = -((data["tar.o.trueAnomaly"]+ data["o.argumentOfPeriapsis"]/2)/180)* Math.PI; //in radians
+				//Target's Orbit
+				drawEllipse(context,data["o.eccentricity"] * maxRadius,0,data["tar.o.sma"]*ratio,data["tar.o.eccentricity"],0.5,"grey");
+				//Target
+				drawObject(context,data["o.eccentricity"] * maxRadius,0,data["tar.o.sma"]*ratio,data["tar.o.eccentricity"],targetAngle,targetImage);
+		}
+		//Orbited Body
+		drawEllipse(context,data["o.eccentricity"] * maxRadius,0,bodySize,0,0.5,"white");
+		
+		drawApAndPe(context,maxRadius,apImage,peImage);
 		context.fillText("Orbiting " + data["v.body"], 0.80 * maxRadius,1.25 * maxRadius);
 		context.restore();
 	}
 	else {
-	/*
-	The orbit is (hyper/para)boloid
-	*/
+		/*
+		The orbit is (hyper/para)boloid
+		*/
 		context.save();
 		context.translate(canvas.width / 2, canvas.height / 2); // Center on orbit center
 		//Orbit
@@ -315,18 +340,15 @@ function drawMap(data) {
 		//Orbited Body
 		drawEllipse(context,0,0,bodySize,0,0.5,"LightBlue");
 		//Ship
-		//drawShip(context,0,0,maxRadius,data["o.eccentricity"],shipAngle,shipImage);
-		context.fillText("Orbiting ! " + data["v.body"], 0.80 * maxRadius,1.25 * maxRadius);
+		drawObject(context,data["o.eccentricity"] * maxRadius,0,maxRadius,data["o.eccentricity"],shipAngle,shipImage);
+		context.fillText("Escaping " + data["v.body"], 0.80 * maxRadius,1.25 * maxRadius);
 		context.restore();
 	}
-	//Small info text
-
-
 }
 /*
-draw the ship on the map
+draw an object on the map
 */
-function drawShip(ctx, x0, y0, a, exc, angle, icon)
+function drawObject(ctx, x0, y0, a, exc, angle, icon)
 {
 	x0 += a * exc;
 	var r = a * (1 - exc*exc)/(1 + exc),x = x0 + r,y = y0;
@@ -344,8 +366,8 @@ function update(data)
 	updateInfoPanel(data);
 	updateButtons(data);
 	updateBars(data);
+	updateTargetPanel(data)
 	drawMap(data);
-	drawShip(data);
 }
 
 /*
