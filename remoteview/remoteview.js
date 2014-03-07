@@ -115,8 +115,7 @@ Parse the received data
 */
 function onMessage(evt)
 {
-	//writeToScreen(evt.data, "#Status");
-	var parsedJSON = $.parseJSON(evt.data.replace(":nan,",":-1,")); // Seriously ? At least parsedJSON does not complain anymore...
+	var parsedJSON = $.parseJSON(evt.data.replace(/:nan,/g,':0,')); // Seriously ? At least parsedJSON does not complain anymore...
 	update(parsedJSON);		
 }
 
@@ -126,9 +125,9 @@ Subscribe to websocket
 function doSubscribe() {
 	writeToScreen("Connected", "#Status");
 	//My orbit stuff
-	doSend(JSON.stringify({ "+": ["v.orbitalVelocity", "o.ApA", "o.PeA", "o.period", "o.timeToAp", "o.timeToPe", "o.inclination", "o.eccentricity", "v.angleToPrograde", "v.body", "o.trueAnomaly","o.argumentOfPeriapsis"], "rate": 100}));
+	doSend(JSON.stringify({ "+": ["v.orbitalVelocity", "o.ApA", "o.PeA", "o.period", "o.timeToAp", "o.timeToPe", "o.inclination", "o.eccentricity", "v.angleToPrograde", "v.body", "o.trueAnomaly","o.lan"], "rate": 100}));
 	//Target
-	doSend(JSON.stringify({ "+": ["tar.o.trueAnomaly", "tar.o.sma", "tar.o.orbitingBody","tar.o.eccentricity","tar.o.argumentOfPeriapsis"]}));
+	doSend(JSON.stringify({ "+": ["tar.o.trueAnomaly", "tar.o.sma", "tar.o.orbitingBody","tar.o.eccentricity","tar.o.lan"]}));
 	//Button
 	doSend(JSON.stringify({ "+": ["v.name","v.lightValue","v.sasValue","v.rcsValue"], "rate": 100}));
 	//resources
@@ -315,7 +314,7 @@ function drawMap(data) {
 		drawObject(context,0,0,maxRadius,data["o.eccentricity"],shipAngle,shipImage);
 		//Target Only if orbiting the same object
 		if (data["tar.o.orbitingBody"] == data["v.body"]) {
-				var targetAngle = -((data["tar.o.trueAnomaly"]+ data["o.argumentOfPeriapsis"]/2)/180)* Math.PI; //in radians
+				var targetAngle = -((data["tar.o.trueAnomaly"]-(data["o.lan"]-data["o.trueAnomaly"]-data["tar.o.lan"]))/180)* Math.PI; //in radians
 				//Target's Orbit
 				drawEllipse(context,data["o.eccentricity"] * maxRadius,0,data["tar.o.sma"]*ratio,data["tar.o.eccentricity"],0.5,"grey");
 				//Target
@@ -323,7 +322,6 @@ function drawMap(data) {
 		}
 		//Orbited Body
 		drawEllipse(context,data["o.eccentricity"] * maxRadius,0,bodySize,0,0.5,"white");
-		
 		drawApAndPe(context,maxRadius,apImage,peImage);
 		context.fillText("Orbiting " + data["v.body"], 0.80 * maxRadius,1.25 * maxRadius);
 		context.restore();
