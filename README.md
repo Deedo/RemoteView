@@ -10,12 +10,14 @@ and go to http://127.0.0.1:8085//Telemachus/remoteview/index.html
 
 TO DO:
 
-Manage hyperbolic orbits
 
-Manage target orbits
 
-Show SOI switches
+Manage target orbits when inclination matters ;)
 
-Show manoeuvre nodes
+Show SOI switches (is telemachus report them ?)
 
-other displays (electricity, thrust, compass, TAC)
+Show manoeuvre nodes (is telemachus report them ?)
+
+other displays (-electricity-, thrust, compass, TAC)
+
+Manage hyperbolic orbits (can do better)
