@@ -113,7 +113,7 @@ Parse the received data
 */
 function onMessage(evt)
 {
-	var parsedJSON = $.parseJSON(evt.data);
+	var parsedJSON = $.parseJSON(evt.data.replace(":nan,",":-1,")); // Seriously ? At least parsedJSON does not complain anymore...
 	update(parsedJSON);		
 }
 
@@ -279,26 +279,49 @@ Draw the nice map !
 function drawMap(data) {
 	var canvas = document.getElementById('Canvas');
 	var context = canvas.getContext('2d');
-	var ratio = (2*maxRadius / (data["o.PeA"] + data["o.ApA"] + (2 *getVBodyRadius(data["v.body"]))));
+		//Preparing canvas context
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		context.font = "12px FixedSys";
+		context.fillStyle = "LightBlue";
+	var ratio = (2*maxRadius / (data["o.PeA"] + data["o.ApA"] + (2*getVBodyRadius(data["v.body"]))));
 	var bodySize = ratio * getVBodyRadius(data["v.body"]); //size of Orbited Body 
 	var shipAngle = -(data["o.trueAnomaly"]/180)* Math.PI; //in radians
 	
-	//Preparing canvas context
-	context.clearRect(0, 0, canvas.width, canvas.height);
-	context.save();
-	context.translate(canvas.width / 2, canvas.height / 2);
-	//Orbit
-	drawEllipse(context,0,0,maxRadius,data["o.eccentricity"],1,"YellowGreen");
-	drawApAndPe(context,maxRadius,apImage,peImage);
-	//Orbited Body
-	drawEllipse(context,data["o.eccentricity"] * maxRadius,0,bodySize,0,0.5,"LightBlue");
-	//Ship
-	drawShip(context,0,0,maxRadius,data["o.eccentricity"],shipAngle,shipImage);
+	if (data["o.eccentricity"] < 1) {
+		/* 
+		The Orbit is closing... or at least not (hyper/para)boloid
+		*/
+		context.save();
+		context.translate(canvas.width / 2, canvas.height / 2); // Center on orbit center
+		//Orbit
+		drawEllipse(context,0,0,maxRadius,data["o.eccentricity"],1,"YellowGreen");
+		drawApAndPe(context,maxRadius,apImage,peImage);
+		//Orbited Body
+		drawEllipse(context,data["o.eccentricity"] * maxRadius,0,bodySize,0,0.5,"LightBlue");
+		//Ship
+		drawShip(context,0,0,maxRadius,data["o.eccentricity"],shipAngle,shipImage);
+		context.fillText("Orbiting " + data["v.body"], 0.80 * maxRadius,1.25 * maxRadius);
+		context.restore();
+	}
+	else {
+	/*
+	The orbit is (hyper/para)boloid
+	*/
+		context.save();
+		context.translate(canvas.width / 2, canvas.height / 2); // Center on orbit center
+		//Orbit
+		drawEllipse(context,data["o.eccentricity"] * maxRadius,0,maxRadius,data["o.eccentricity"],1,"YellowGreen");
+		//drawApAndPe(context,maxRadius,apImage,peImage);
+		//Orbited Body
+		drawEllipse(context,0,0,bodySize,0,0.5,"LightBlue");
+		//Ship
+		//drawShip(context,0,0,maxRadius,data["o.eccentricity"],shipAngle,shipImage);
+		context.fillText("Orbiting ! " + data["v.body"], 0.80 * maxRadius,1.25 * maxRadius);
+		context.restore();
+	}
 	//Small info text
-	context.font = "12px FixedSys";
-	context.fillStyle = "LightBlue";
-	context.fillText("Orbiting " + data["v.body"], 0.80 * maxRadius,1.25 * maxRadius);
-	context.restore();
+
+
 }
 /*
 draw the ship on the map
