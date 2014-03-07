@@ -7,10 +7,12 @@
 <script src="remoteview.js"></script>
 </head>
 <body>
-<div class="BigScreen" id="Screen">
+<div id="Map">
 	<canvas id="Canvas" height="800" width="800"></canvas>
-	<div id="Status">Offline</div>
-	<div id="OrbitInfo">
+</div>
+<div class="panelContainer" id="middle">
+	<div class="panel" id="Status">Offline</div>
+	<div class="panel" id="OrbitInfo">
 		<h1>Orbit Info</h1>
 		<div id="results">
 			<div class="item" id="ItemOrbitalSpeed">Orbital Speed :</div> 
@@ -44,13 +46,12 @@
 			<div class="value" id="TrueAnomaly">No data</div>
 		</div>
 	</div>
-	<div id="ButtonPanel">
-		<div class="Button"><div id="SAS" onclick="switchButton('SAS')"></div></div>
-		<div class="Button"><div id="RCS" onclick="switchButton('RCS')"></div></div>
-		<div class="Button"><div id="Light" onclick="switchButton('Light')"></div></div>
+	<div class="panel" id="ButtonPanel">
+		<div class="Button"><div class="ButtonLabel" id="SAS" onclick="switchButton('SAS')"></div></div>
+		<div class="Button"><div class="ButtonLabel" id="RCS" onclick="switchButton('RCS')"></div></div>
+		<div class="Button"><div class="ButtonLabel" id="Light" onclick="switchButton('Light')"></div></div>
 	</div>
-	<div id="BarsPanel">
-		<h1>Resources Panel</h1>
+	<div class="panel" id="BarsPanel">
 		<div class="item" id="ItemLiquidFuel">Liquid Fuel</div>
 		<div class="progress-bar">
 			<span id="pctLiquidFuel" style="width: 100%"></span>
@@ -67,6 +68,48 @@
 		</div>
 		<div class="value" id="MonoPropellant">No data</div>
 	</div>
+	<div class="panel" id="ElectricChargePanel">
+		<div class="item" id="ItemElectricCharge">Electric Charge</div>
+		<div class="progress-bar">
+			<span id="pctElectricCharge" style="width: 100%"></span>
+		</div>
+		<div class="value" id="ElectricCharge">No data</div>
+	</div>
 </div>
-</script>
+<div class="panelContainer" id="right">
+	<div class="panel" id="TargetInfo">
+		<h1>Target Info</h1>
+		<div id="results">
+			<div class="item" id="ItemOrbitalSpeed">Orbital Speed :</div> 
+			<div class="value" id="OrbitalSpeed">No data</div>
+			
+			<div class="item" id="ItemApoapsis">Apoapsis :</div> 
+			<div class="value" id="Apoapsis">No data</div>
+			
+			<div class="item" id="ItemPeriapsis">Periapsis :</div> 
+			<div class="value" id="Periapsis">No data</div>
+			
+			<div class="item" id="ItemOrbitalPeriod">Orbital period :</div> 
+			<div class="value" id="OrbitalPeriod">No data</div>
+			
+			<div class="item" id="ItemTimeToApoapsis">Time to apoapsis :</div> 
+			<div class="value" id="TimeToApoapsis">No data</div>
+			
+			<div class="item" id="ItemTimeToPeriapsis">Time to Periapsis :</div> 
+			<div class="value" id="TimeToPeriapsis">No data</div>
+			
+			<div class="item" id="ItemInclination">Inclination :</div> 
+			<div class="value" id="Inclination">No data</div>
+			
+			<div class="item" id="ItemEccentricity">Eccentricity : </div> 
+			<div class="value" id="Eccentricity">No data</div>
+			
+			<div class="item" id="ItemAngleToPrograde">Angle to prograde :</div> 
+			<div class="value" id="AngleToPrograde">No data</div>
+			
+			<div class="item" id="ItemTrueAnomaly">True Anomaly :</div> 
+			<div class="value" id="TrueAnomaly">No data</div>
+		</div>
+	</div>
+<div>
 </html>

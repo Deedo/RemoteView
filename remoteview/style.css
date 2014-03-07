@@ -1,50 +1,10 @@
+/*
+for infos https://github.com/Deedo/RemoteView
+*/
 body{ 
 background-color: #282828;
 font-family: FixedSys;
 }
-
-#Screen {
-width: 1140px;
-height: 820px;
-}
-/*
-Status Panel
-*/
-#Status {
-width: 250px;
-height: auto;
-color: YellowGreen;
-padding: 20px;
-margin: 5px;
-border: 5px outset white;
-background-color: black;
-border-radius: 30px;
-float: left;
-}
-
-/*
-Orbit info Panel
-*/
-#OrbitInfo {
-width: 250px;
-height: auto;
-padding: 20px;
-margin: 5px;
-color: YellowGreen;
-border: 5px outset white;
-background-color: black;
-border-radius: 30px;
-float: left;
-}
-
-#OrbitInfo h1
-{
-font-size: 12px;
-color: YellowGreen;
-text-align: center;
-border-radius: 5px;
-}
-
 .item {
 position: relative;
 float: left;
@@ -55,83 +15,32 @@ color: LightBlue;
 position: relative;
 float: right;
 }
-
-
+#Screen {
+width: 1140px;
+height: 820px;
+}
 /*
 map
 */
-
-#Canvas {
+#Map {
 color: YellowGreen;
 margin: 5px;
+width: auto;
+height: auto;
+border: 5px outset white;
+background-color: black;
+border-radius: 30px;
+float: left;
+}
+#Canvas {
 width: 800px;
 height: 800px;
-border: 5px outset white;
-background-color: black;
-border-radius: 30px;
-float: left;
-}
-
-/* 
-Button Panel
-*/
-#ButtonPanel {
-width: 250px;
-height: auto;
-padding: 20px;
-margin: 5px;
-color: YellowGreen;
-border: 5px outset white;
-background-color: black;
-border-radius: 30px;
-float: left;
-}
-
-.Button {
-background-color: black;
-margin: 9px;
-width: 64px;
-height: 64px;
-float: right;
-box-shadow: 0 0 20px 2px black;
-}
-
-#SAS {
-background-image: url(images/SwitchIcons.png);
-background-position: 0 -128px;
-cursor: pointer;
-width: 64px;
-height: 64px;
-float: right;
-border-radius: 5px;
-box-shadow: 0 1px 5px white inset; 
-}
-
-#RCS {
-background-image: url(images/SwitchIcons.png);
-background-position: 0 -64px;
-cursor: pointer;
-width: 64px;
-height: 64px;
-float: right;
-border-radius: 5px;
-box-shadow: 0 1px 5px white inset; 
-}
-
-#Light {
-background-image: url(images/SwitchIcons.png);
-cursor: pointer;
-width: 64px;
-height: 64px;
-float: right;
-border-radius: 5px;
-box-shadow: 0 1px 5px white inset; 
 }
 
 /*
-Progress bars
+middle panels
 */
-#BarsPanel {
+.panel {
 width: 250px;
 height: auto;
 padding: 20px;
@@ -142,19 +51,61 @@ background-color: black;
 border-radius: 30px;
 float: left;
 }
-#BarsPanel h1
-{
+.panel h1 {
 width: 250px;
 font-size: 12px;
 color: YellowGreen;
 text-align: center;
 border-radius: 5px;
 }
+.panelContainer {
+width: 310px;
+height:810px;
+float: left;
+}
+/*
+Status Panel
+*/
+#Status {}
+/*
+Orbit info Panel
+*/
+#OrbitInfo {}
+
+/* 
+Button Panel
+*/
+#ButtonPanel {}
+.Button {
+background-color: black;
+margin: 10px 9px 5px 9px;
+width: 64px;
+height: 64px;
+float: right;
+box-shadow: 0 0 20px 2px black;
+}
+.ButtonLabel {
+background-image: url(images/SwitchIcons.png);
+cursor: pointer;
+width: 64px;
+height: 64px;
+float: right;
+border-radius: 5px;
+box-shadow: 0 1px 5px white inset;
+}
+#SAS {background-position: 0 -128px;}
+#RCS {background-position: 0 -64px;}
+#Light {}
+
+/*
+Progress bars
+*/
+#BarsPanel {}
 #BarsPanel .item
 {
 text-align: center;
 width: 250px;
-margin-top: 15px;
+margin-top: 5px;
 margin-bottom: 5px;
 }
 #BarsPanel .value {
@@ -174,7 +125,6 @@ border-radius: 5px;
 border: 1px inset white;
 box-shadow: 0 1px 5px white inset; 
 }
-
 .progress-bar span {
 display: inline-block;
 background-color: yellowgreen; 
@@ -184,3 +134,20 @@ box-shadow: 0 2px 0 black inset;
 transition: width .4s ease-in-out; 
 }
 
+/*
+Electricity Panel
+*/
+#ElectricChargePanel {}
+#ElectricChargePanel .item
+{
+text-align: center;
+width: 250px;
+margin-top: 5px;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#ElectricChargePanel .value {
+position: relative;
+width: 250px;
+text-align: center;
+}

@@ -83,7 +83,7 @@ function init()
 	shipImage.src = './icons/ship.png';
 	apImage.src = './icons/ap.png';
 	peImage.src = './icons/pe.png';
-    writeToScreen("Connecting...", "#Status");
+    writeToScreen("Connecting to "+wsUri, "#Status");
 	websocket = new WebSocket(wsUri); 
 	websocket.onopen = function (evt) { doSubscribe() };
 	websocket.onclose = function (evt) { onClose(evt) }; 
@@ -125,8 +125,8 @@ function doSubscribe() {
 	doSend(JSON.stringify({ "+": ["v.orbitalVelocity", "o.ApA", "o.PeA", "o.period", "o.timeToAp", "o.timeToPe", "o.inclination", "o.eccentricity", "v.angleToPrograde", "v.body", "o.trueAnomaly"], "rate": 100}));
 	doSend(JSON.stringify({ "+": ["v.name","v.lightValue","v.sasValue","v.rcsValue"], "rate": 100}));
 	doSend(JSON.stringify({ "+": ["v.name","v.lightValue","v.sasValue","v.rcsValue"], "rate": 100}));
-	doSend(JSON.stringify({ "+": ["r.resourceMax[Oxidizer]","r.resourceMax[LiquidFuel]","r.resourceMax[MonoPropellant]"], "rate": 100}));
-	doSend(JSON.stringify({ "+": ["r.resource[Oxidizer]","r.resource[LiquidFuel]","r.resource[MonoPropellant]"], "rate": 100}));
+	doSend(JSON.stringify({ "+": ["r.resourceMax[Oxidizer]","r.resourceMax[LiquidFuel]","r.resourceMax[MonoPropellant]","r.resourceMax[ElectricCharge]"], "rate": 100}));
+	doSend(JSON.stringify({ "+": ["r.resource[Oxidizer]","r.resource[LiquidFuel]","r.resource[MonoPropellant]","r.resource[ElectricCharge]"], "rate": 100}));
 }
 
 /*
@@ -214,15 +214,17 @@ function updateBars(data) {
 	var pctLiquidFuel = (data["r.resource[LiquidFuel]"] / data["r.resourceMax[LiquidFuel]"])*100;
 	var pctOxidizer = (data["r.resource[Oxidizer]"] / data["r.resourceMax[Oxidizer]"])*100;
 	var pctMonoPropellant = (data["r.resource[MonoPropellant]"] / data["r.resourceMax[MonoPropellant]"])*100;
+	var pctElectricCharge = (data["r.resource[ElectricCharge]"] / data["r.resourceMax[ElectricCharge]"])*100;
 
 	document.getElementById("pctLiquidFuel").setAttribute("style","width:"+pctLiquidFuel+"%");
 	document.getElementById("pctOxidizer").setAttribute("style","width:"+pctOxidizer+"%");
+	document.getElementById("pctMonoPropellant").setAttribute("style","width:"+pctMonoPropellant+"%");
 	document.getElementById("pctMonoPropellant").setAttribute("style","width:"+pctMonoPropellant+"%");
 
 	writeToScreen(data["r.resource[LiquidFuel]"].toFixed() + " / " + data["r.resourceMax[LiquidFuel]"].toFixed(), "#LiquidFuel");
 	writeToScreen(data["r.resource[Oxidizer]"].toFixed() + " / " + data["r.resourceMax[Oxidizer]"].toFixed(), "#Oxidizer");
 	writeToScreen(data["r.resource[MonoPropellant]"].toFixed() + " / "  +data["r.resourceMax[MonoPropellant]"].toFixed(), "#MonoPropellant");
-
+	writeToScreen(data["r.resource[ElectricCharge]"].toFixed() + " / "  +data["r.resourceMax[ElectricCharge]"].toFixed(), "#ElectricCharge");
 }
 
 /*
@@ -230,15 +232,15 @@ Update Orbit info box
 */
 function updateInfoPanel(data) {
 	writeToScreen(data["v.orbitalVelocity"].toFixed() + " m/s", "#OrbitalSpeed");
-	writeToScreen(data["o.ApA"].toFixed(), "#Apoapsis");
-	writeToScreen(data["o.PeA"].toFixed(), "#Periapsis");
+	writeToScreen(data["o.ApA"].toFixed() + " m", "#Apoapsis");
+	writeToScreen(data["o.PeA"].toFixed() + " m", "#Periapsis");
 	writeToScreen(seconds2time(data["o.period"].toFixed()), "#OrbitalPeriod");
 	writeToScreen(seconds2time(data["o.timeToAp"].toFixed()), "#TimeToApoapsis");
 	writeToScreen(seconds2time(data["o.timeToPe"].toFixed()), "#TimeToPeriapsis");
-	writeToScreen(data["o.inclination"].toFixed(3), "#Inclination");
+	writeToScreen(data["o.inclination"].toFixed(3) + " &deg", "#Inclination");
 	writeToScreen(data["o.eccentricity"].toFixed(3), "#Eccentricity");
-	writeToScreen(data["v.angleToPrograde"].toFixed(2), "#AngleToPrograde");
-	writeToScreen(data["o.trueAnomaly"].toFixed(2), "#TrueAnomaly");
+	writeToScreen(data["v.angleToPrograde"].toFixed(2) + " &deg", "#AngleToPrograde");
+	writeToScreen(data["o.trueAnomaly"].toFixed(2) + " &deg", "#TrueAnomaly");
 }
 
 /*
