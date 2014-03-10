@@ -1,7 +1,7 @@
 /*
 for infos https://github.com/Deedo/RemoteView
 */
-var wsUri = "ws://127.0.0.1:8085/datalink"; //You can put an IP here
+var wsUri = "ws://192.168.0.38:8085/datalink"; //You can put an IP here
 var maxRadius = 300; // used for the map
 
 /* draw ellipse
@@ -73,6 +73,29 @@ function seconds2time (seconds) {
 }
 
 /*
+Testing 3D stuff
+*/
+function drawGrid(ctx) {
+	x = -400;
+	y = -400;
+	ctx.beginPath();
+	while (x<=400) {
+		ctx.moveTo(x, y);
+		ctx.lineTo(x, y+800);
+		x+=50;
+	}
+	x=400;
+	while (y<=400) {
+		ctx.moveTo(x, y+50);
+		ctx.lineTo(x-800, y+50);
+		y+=50;
+	}
+	ctx.lineWidth=0.2;
+	ctx.strokeStyle = "white";
+	ctx.stroke();
+}
+
+/*
 Load some graphics and open websocket
 */
 function init()
@@ -85,13 +108,13 @@ function init()
 	apImage.src = './icons/ap.png';
 	peImage.src = './icons/pe.png';
 	targetImage.src = './icons/target.png';
-    writeToScreen("Connecting to "+wsUri, "#Status");
+
+	writeToScreen("Connecting to "+wsUri, "#Status");
 	websocket = new WebSocket(wsUri); 
 	websocket.onopen = function (evt) { doSubscribe() };
 	websocket.onclose = function (evt) { onClose(evt) }; 
 	websocket.onmessage = function (evt) { onMessage(evt) }; 
 	websocket.onerror = function (evt) { onError(evt) };
-	
 }
 
 /*
@@ -129,7 +152,7 @@ function doSubscribe() {
 	//Target
 	doSend(JSON.stringify({ "+": ["tar.o.trueAnomaly", "tar.o.sma", "tar.o.orbitingBody","tar.o.eccentricity","tar.o.lan"]}));
 	//Button
-	doSend(JSON.stringify({ "+": ["v.name","v.lightValue","v.sasValue","v.rcsValue"], "rate": 100}));
+	doSend(JSON.stringify({ "+": ["v.name","v.lightValue","v.sasValue","v.rcsValue"]}));
 	//resources
 	doSend(JSON.stringify({ "+": ["r.resourceMax[Oxidizer]","r.resourceMax[LiquidFuel]","r.resourceMax[MonoPropellant]","r.resourceMax[ElectricCharge]"]}));
 	doSend(JSON.stringify({ "+": ["r.resource[Oxidizer]","r.resource[LiquidFuel]","r.resource[MonoPropellant]","r.resource[ElectricCharge]"]}));
@@ -301,13 +324,14 @@ function drawMap(data) {
 	var ratio = (2*maxRadius / (data["o.PeA"] + data["o.ApA"] + (2*getVBodyRadius(data["v.body"]))));
 	var bodySize = ratio * getVBodyRadius(data["v.body"]); //size of Orbited Body 
 	var shipAngle = -(data["o.trueAnomaly"]/180)* Math.PI; //in radians
-	
+
 	if (data["o.eccentricity"] < 1) {
 		/* 
 		The Orbit is closing... or at least not (hyper/para)boloid
 		*/
 		context.save();
 		context.translate(canvas.width / 2, canvas.height / 2); // Center on orbit center
+		drawGrid(context);
 		//Orbit
 		drawEllipse(context,0,0,maxRadius,data["o.eccentricity"],1,"YellowGreen");
 		//Ship
@@ -342,6 +366,7 @@ function drawMap(data) {
 		context.fillText("Escaping " + data["v.body"], 0.80 * maxRadius,1.25 * maxRadius);
 		context.restore();
 	}
+
 }
 /*
 draw an object on the map
