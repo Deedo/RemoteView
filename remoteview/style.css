@@ -25,17 +25,47 @@ map
 #Map {
 color: YellowGreen;
 margin: 5px;
-width: auto;
-height: auto;
+width: 800px;
+height: 800px;
 border: 5px outset white;
 background-color: black;
 border-radius: 30px;
 float: left;
+position:relative;
+overflow:hidden;
 }
-#Canvas {
+#BodyPlane {
+position:absolute; /* this to position them */
+left: 0; 
+top: 0;
 width: 800px;
 height: 800px;
+/*
+-webkit-transform:perspective(800) rotateX(0deg);
+*/
 }
+#OrbitPlane {
+position:absolute; /* this to position them */
+left: 0; 
+top: 0;
+width: 800px;
+height: 800px;
+
+-webkit-transform:perspective(800) rotateX(20deg);
+
+}
+#TargetPlane {
+position:absolute; /* this to position them */
+left: 0; 
+top: 0;
+width: 800px;
+height: 800px;
+
+-webkit-transform:perspective(800) rotateY(45deg);
+
+}
+
+
 
 /*
 middle panels
@@ -62,6 +92,7 @@ border-radius: 5px;
 width: 310px;
 height:810px;
 float: left;
+
 }
 /*
 Status Panel
