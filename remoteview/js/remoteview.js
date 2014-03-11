@@ -283,7 +283,7 @@ function drawMap(data) {
 		}
 	
 		//Some text at the bottom
-		OrbitPlaneContext.fillText(data["o.argumentOfPeriapsis"].toFixed(2), 0.5 * maxRadius,1.25 * maxRadius);
+		OrbitPlaneContext.fillText("Orbiting " + data["v.body"], 0.80 * maxRadius,1.25 * maxRadius);
 		
 	}
 	else {
