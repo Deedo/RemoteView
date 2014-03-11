@@ -315,12 +315,21 @@ function updateButtons(data) {
 Draw the nice map !
 */
 function drawMap(data) {
-	var canvas = document.getElementById('Canvas');
-	var context = canvas.getContext('2d');
-		//Preparing canvas context
-		context.clearRect(0, 0, canvas.width, canvas.height);
-		context.font = "12px FixedSys";
-		context.fillStyle = "LightBlue";
+	var BodyPlane = document.getElementById('BodyPlane');
+	var OrbitPlane = document.getElementById('OrbitPlane');
+	var TargetPlane = document.getElementById('TargetPlane');
+	
+	var OrbitPlaneContext = OrbitPlane.getContext('2d');
+	var BodyPlaneContext = BodyPlane.getContext('2d');
+	var TargetPlaneContext = TargetPlane.getContext('2d');
+	
+		//Preparing OrbitPlane OrbitPlaneContext
+		OrbitPlaneContext.clearRect(0, 0, 800, 800);
+		BodyPlaneContext.clearRect(0, 0, 800, 800);
+		TargetPlaneContext.clearRect(0, 0, 800, 800);
+		
+		OrbitPlaneContext.font = "12px FixedSys";
+		OrbitPlaneContext.fillStyle = "LightBlue";
 	var ratio = (2*maxRadius / (data["o.PeA"] + data["o.ApA"] + (2*getVBodyRadius(data["v.body"]))));
 	var bodySize = ratio * getVBodyRadius(data["v.body"]); //size of Orbited Body 
 	var shipAngle = -(data["o.trueAnomaly"]/180)* Math.PI; //in radians
@@ -329,44 +338,53 @@ function drawMap(data) {
 		/* 
 		The Orbit is closing... or at least not (hyper/para)boloid
 		*/
-		context.save();
-		context.translate(canvas.width / 2, canvas.height / 2); // Center on orbit center
-		drawGrid(context);
+		OrbitPlaneContext.save();
+		BodyPlaneContext.save();
+		TargetPlaneContext.save();
+		
+		BodyPlaneContext.translate(400,400); // Center on orbit center
+		OrbitPlaneContext.translate(400,400); // Center on orbit center
+		TargetPlaneContext.translate(400,400); // Center on orbit center
+		
+		drawGrid(BodyPlaneContext);
 		//Orbit
-		drawEllipse(context,0,0,maxRadius,data["o.eccentricity"],1,"YellowGreen");
+		drawEllipse(OrbitPlaneContext,0,0,maxRadius,data["o.eccentricity"],1,"YellowGreen");
 		//Ship
-		drawObject(context,0,0,maxRadius,data["o.eccentricity"],shipAngle,shipImage);
+		drawObject(OrbitPlaneContext,0,0,maxRadius,data["o.eccentricity"],shipAngle,shipImage);
 		//Target Only if orbiting the same object
 		if (data["tar.o.orbitingBody"] == data["v.body"]) {
 				var targetAngle = -((data["tar.o.trueAnomaly"]-(data["o.lan"]-data["o.trueAnomaly"]-data["tar.o.lan"]))/180)* Math.PI; //in radians
 				//Target's Orbit
-				drawEllipse(context,data["o.eccentricity"] * maxRadius,0,data["tar.o.sma"]*ratio,data["tar.o.eccentricity"],0.5,"grey");
+				drawEllipse(TargetPlaneContext,data["o.eccentricity"] * maxRadius,0,data["tar.o.sma"]*ratio,data["tar.o.eccentricity"],1,"grey");
 				//Target
-				drawObject(context,data["o.eccentricity"] * maxRadius,0,data["tar.o.sma"]*ratio,data["tar.o.eccentricity"],targetAngle,targetImage);
+				drawObject(TargetPlaneContext,data["o.eccentricity"] * maxRadius,0,data["tar.o.sma"]*ratio,data["tar.o.eccentricity"],targetAngle,targetImage);
 		}
 		//Orbited Body
-		drawEllipse(context,data["o.eccentricity"] * maxRadius,0,bodySize,0,0.5,"white");
-		drawApAndPe(context,maxRadius,apImage,peImage);
-		context.fillText("Orbiting " + data["v.body"], 0.80 * maxRadius,1.25 * maxRadius);
-		context.restore();
+		drawEllipse(BodyPlaneContext,data["o.eccentricity"] * maxRadius,0,bodySize,0,0.5,"white");
+		
+		drawApAndPe(OrbitPlaneContext,maxRadius,apImage,peImage);
+		BodyPlaneContext.fillText("Orbiting " + data["v.body"], 0.80 * maxRadius,1.25 * maxRadius);
+		BodyPlaneContext.restore();
+		OrbitPlaneContext.restore();
+		TargetPlaneContext.restore();
+		
 	}
 	else {
 		/*
 		The orbit is (hyper/para)boloid
 		*/
-		context.save();
-		context.translate(canvas.width / 2, canvas.height / 2); // Center on orbit center
+		OrbitPlaneContext.save();
+		OrbitPlaneContext.translate(OrbitPlane.width / 2, OrbitPlane.height / 2); // Center on orbit center
 		//Orbit
-		drawEllipse(context,data["o.eccentricity"] * maxRadius,0,maxRadius,data["o.eccentricity"],1,"YellowGreen");
-		//drawApAndPe(context,maxRadius,apImage,peImage);
+		drawEllipse(OrbitPlaneContext,data["o.eccentricity"] * maxRadius,0,maxRadius,data["o.eccentricity"],1,"YellowGreen");
+		//drawApAndPe(OrbitPlaneContext,maxRadius,apImage,peImage);
 		//Orbited Body
-		drawEllipse(context,0,0,bodySize,0,0.5,"LightBlue");
+		drawEllipse(OrbitPlaneContext,0,0,bodySize,0,0.5,"LightBlue");
 		//Ship
-		drawObject(context,data["o.eccentricity"] * maxRadius,0,maxRadius,data["o.eccentricity"],shipAngle,shipImage);
-		context.fillText("Escaping " + data["v.body"], 0.80 * maxRadius,1.25 * maxRadius);
-		context.restore();
+		drawObject(OrbitPlaneContext,data["o.eccentricity"] * maxRadius,0,maxRadius,data["o.eccentricity"],shipAngle,shipImage);
+		OrbitPlaneContext.fillText("Escaping " + data["v.body"], 0.80 * maxRadius,1.25 * maxRadius);
+		OrbitPlaneContext.restore();
 	}
-
 }
 /*
 draw an object on the map
