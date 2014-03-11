@@ -40,9 +40,6 @@ left: 0;
 top: 0;
 width: 800px;
 height: 800px;
-/*
--webkit-transform:perspective(800) rotateX(0deg);
-*/
 }
 #OrbitPlane {
 position:absolute; /* this to position them */
@@ -50,9 +47,6 @@ left: 0;
 top: 0;
 width: 800px;
 height: 800px;
-
--webkit-transform:perspective(800) rotateX(20deg);
-
 }
 #TargetPlane {
 position:absolute; /* this to position them */
@@ -60,9 +54,6 @@ left: 0;
 top: 0;
 width: 800px;
 height: 800px;
-
--webkit-transform:perspective(800) rotateY(45deg);
-
 }
 
 

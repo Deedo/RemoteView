@@ -75,7 +75,7 @@ function seconds2time (seconds) {
 /*
 Testing 3D stuff
 */
-function drawGrid(ctx) {
+function drawGrid(ctx,color,thick) {
 	x = -400;
 	y = -400;
 	ctx.beginPath();
@@ -90,8 +90,8 @@ function drawGrid(ctx) {
 		ctx.lineTo(x-800, y+50);
 		y+=50;
 	}
-	ctx.lineWidth=0.2;
-	ctx.strokeStyle = "white";
+	ctx.lineWidth= thick;
+	ctx.strokeStyle = color;
 	ctx.stroke();
 }
 
@@ -148,92 +148,14 @@ Subscribe to websocket
 function doSubscribe() {
 	writeToScreen("Connected", "#Status");
 	//My orbit stuff
-	doSend(JSON.stringify({ "+": ["v.orbitalVelocity", "o.ApA", "o.PeA", "o.period", "o.timeToAp", "o.timeToPe", "o.inclination", "o.eccentricity", "v.angleToPrograde", "v.body", "o.trueAnomaly","o.lan"], "rate": 100}));
+	doSend(JSON.stringify({ "+": ["v.orbitalVelocity", "o.ApA", "o.PeA", "o.period", "o.timeToAp", "o.timeToPe", "o.inclination", "o.eccentricity", "v.angleToPrograde", "v.body", "o.trueAnomaly","o.lan","o.argumentOfPeriapsis","v.long"], "rate": 100}));
 	//Target
-	doSend(JSON.stringify({ "+": ["tar.o.trueAnomaly", "tar.o.sma", "tar.o.orbitingBody","tar.o.eccentricity","tar.o.lan"]}));
+	doSend(JSON.stringify({ "+": ["tar.o.trueAnomaly", "tar.o.sma", "tar.o.orbitingBody","tar.o.eccentricity","tar.o.lan","tar.o.inclination","tar.o.argumentOfPeriapsis"]}));
 	//Button
 	doSend(JSON.stringify({ "+": ["v.name","v.lightValue","v.sasValue","v.rcsValue"]}));
 	//resources
 	doSend(JSON.stringify({ "+": ["r.resourceMax[Oxidizer]","r.resourceMax[LiquidFuel]","r.resourceMax[MonoPropellant]","r.resourceMax[ElectricCharge]"]}));
 	doSend(JSON.stringify({ "+": ["r.resource[Oxidizer]","r.resource[LiquidFuel]","r.resource[MonoPropellant]","r.resource[ElectricCharge]"]}));
-}
-
-/*
-send something on the wire
-*/
-function doSend(message)
-{
-	websocket.send(message);
-}
-
-/*
-put content in a div
-*/
-function writeToScreen(message, theDiv)
-{
-	$(theDiv).html(message);
-}
-
-/*
-Get radius of KSP bodies
-TODO : must be an other way to do it...
-*/
-function getVBodyRadius(vbody)
-{
-	switch (vbody)
-	{
-	case 'Sun':
-		return 261600000;
-		break;
-	case 'Kerbin':
-		return 600000;
-		break;
-	case 'Mun':
-		return 200000;
-		break;
-	case 'Minmus':
-		return 60000;
-		break;
-	case 'Eve':
-		return 700000;
-		break;
-	case 'Gilly':
-		return 13000;
-		break;
-	case 'Moho':
-		return 250000;
-		break;
-	case 'Duna':
-		return 320000;
-		break;	
-	case 'Dres':
-		return 138000;
-		break;
-	case 'Jool':
-		return 6000000;
-		break;
-	case 'Laythe':
-		return 500000;
-		break;
-	case 'Vall':
-		return 300000;
-		break;
-	case 'Tylo':
-		return 600000;
-		break;
-	case 'Bop':
-		return 65000;
-		break;
-	case 'Pol':
-		return 44000;
-		break;
-	case 'Eeloo':
-		return 138000;
-		break;
-	case 'Ike':
-		return 130000;
-		break;
-	}
 }
 
 /*
@@ -315,65 +237,60 @@ function updateButtons(data) {
 Draw the nice map !
 */
 function drawMap(data) {
-	var BodyPlane = document.getElementById('BodyPlane');
+	var Map = document.getElementById('Map');
 	var OrbitPlane = document.getElementById('OrbitPlane');
 	var TargetPlane = document.getElementById('TargetPlane');
-	
 	var OrbitPlaneContext = OrbitPlane.getContext('2d');
-	var BodyPlaneContext = BodyPlane.getContext('2d');
 	var TargetPlaneContext = TargetPlane.getContext('2d');
-	
-		//Preparing OrbitPlane OrbitPlaneContext
-		OrbitPlaneContext.clearRect(0, 0, 800, 800);
-		BodyPlaneContext.clearRect(0, 0, 800, 800);
-		TargetPlaneContext.clearRect(0, 0, 800, 800);
-		
-		OrbitPlaneContext.font = "12px FixedSys";
-		OrbitPlaneContext.fillStyle = "LightBlue";
 	var ratio = (2*maxRadius / (data["o.PeA"] + data["o.ApA"] + (2*getVBodyRadius(data["v.body"]))));
 	var bodySize = ratio * getVBodyRadius(data["v.body"]); //size of Orbited Body 
 	var shipAngle = -(data["o.trueAnomaly"]/180)* Math.PI; //in radians
+	//Preparing OrbitPlane OrbitPlaneContext
+	OrbitPlaneContext.clearRect(0, 0, 800, 800);
+	TargetPlaneContext.clearRect(0, 0, 800, 800);
+	OrbitPlaneContext.font = "12px FixedSys";
+	OrbitPlaneContext.fillStyle = "LightBlue";
+	OrbitPlaneContext.save();
+	TargetPlaneContext.save();
+	OrbitPlaneContext.translate(400,400); // Center on orbit center
+	TargetPlaneContext.translate(400,400); // Center on orbit center
+		if (data["o.eccentricity"] < 1) { //The Orbit is closing... or at least not (hyper/para)boloid
 
-	if (data["o.eccentricity"] < 1) {
-		/* 
-		The Orbit is closing... or at least not (hyper/para)boloid
-		*/
-		OrbitPlaneContext.save();
-		BodyPlaneContext.save();
-		TargetPlaneContext.save();
-		
-		BodyPlaneContext.translate(400,400); // Center on orbit center
-		OrbitPlaneContext.translate(400,400); // Center on orbit center
-		TargetPlaneContext.translate(400,400); // Center on orbit center
-		
-		drawGrid(BodyPlaneContext);
+		//Orbited Body
+		drawEllipse(OrbitPlaneContext,data["o.eccentricity"] * maxRadius,0,bodySize,0,0.5,"white");
 		//Orbit
 		drawEllipse(OrbitPlaneContext,0,0,maxRadius,data["o.eccentricity"],1,"YellowGreen");
 		//Ship
 		drawObject(OrbitPlaneContext,0,0,maxRadius,data["o.eccentricity"],shipAngle,shipImage);
-		//Target Only if orbiting the same object
-		if (data["tar.o.orbitingBody"] == data["v.body"]) {
-				var targetAngle = -((data["tar.o.trueAnomaly"]-(data["o.lan"]-data["o.trueAnomaly"]-data["tar.o.lan"]))/180)* Math.PI; //in radians
+		//tiny icons
+		drawApAndPe(OrbitPlaneContext,maxRadius,apImage,peImage);
+		if (data["tar.o.orbitingBody"] == data["v.body"]) { //Only draw Target orbit if the body is the same...
+				var targetAngle = -(data["tar.o.trueAnomaly"]/180)* Math.PI; //in radians
+				//Draw Grid 
+				TargetPlaneContext.translate((data["o.eccentricity"] * maxRadius),0);
+				TargetPlaneContext.rotate(data["o.argumentOfPeriapsis"]*Math.PI/180);
+				TargetPlaneContext.translate(-(data["o.eccentricity"] * maxRadius),0);
+				drawGrid(TargetPlaneContext,"grey",0.5);
+				//drawGrid(OrbitPlaneContext,"yellowgreen",0.2);
 				//Target's Orbit
 				drawEllipse(TargetPlaneContext,data["o.eccentricity"] * maxRadius,0,data["tar.o.sma"]*ratio,data["tar.o.eccentricity"],1,"grey");
 				//Target
 				drawObject(TargetPlaneContext,data["o.eccentricity"] * maxRadius,0,data["tar.o.sma"]*ratio,data["tar.o.eccentricity"],targetAngle,targetImage);
+				
+				TargetPlane.style["-webkit-transform-origin"] = (400+data["o.eccentricity"] * maxRadius) + "px 400px 0px ";
+				Map.style.WebkitPerspective = "800px";
+				TargetPlane.style.WebkitTransform = "rotateX("+data["o.inclination"]+"deg) rotateZ("+data["o.lan"]+"deg)";
 		}
-		//Orbited Body
-		drawEllipse(BodyPlaneContext,data["o.eccentricity"] * maxRadius,0,bodySize,0,0.5,"white");
-		
-		drawApAndPe(OrbitPlaneContext,maxRadius,apImage,peImage);
-		BodyPlaneContext.fillText("Orbiting " + data["v.body"], 0.80 * maxRadius,1.25 * maxRadius);
-		BodyPlaneContext.restore();
-		OrbitPlaneContext.restore();
-		TargetPlaneContext.restore();
+	
+		//Some text at the bottom
+		OrbitPlaneContext.fillText(data["o.argumentOfPeriapsis"].toFixed(2), 0.5 * maxRadius,1.25 * maxRadius);
 		
 	}
 	else {
 		/*
 		The orbit is (hyper/para)boloid
+		This part is very buggy and does not work as wanted
 		*/
-		OrbitPlaneContext.save();
 		OrbitPlaneContext.translate(OrbitPlane.width / 2, OrbitPlane.height / 2); // Center on orbit center
 		//Orbit
 		drawEllipse(OrbitPlaneContext,data["o.eccentricity"] * maxRadius,0,maxRadius,data["o.eccentricity"],1,"YellowGreen");
@@ -383,8 +300,10 @@ function drawMap(data) {
 		//Ship
 		drawObject(OrbitPlaneContext,data["o.eccentricity"] * maxRadius,0,maxRadius,data["o.eccentricity"],shipAngle,shipImage);
 		OrbitPlaneContext.fillText("Escaping " + data["v.body"], 0.80 * maxRadius,1.25 * maxRadius);
-		OrbitPlaneContext.restore();
 	}
+	OrbitPlaneContext.restore();
+	TargetPlaneContext.restore();
+		
 }
 /*
 draw an object on the map
@@ -409,24 +328,6 @@ function update(data)
 	updateBars(data);
 	updateTargetPanel(data)
 	drawMap(data);
-}
-
-/*
-onClick RCS-SAS-Light
-*/
-function switchButton(what) {
-	switch (what)
-	{
-	case 'RCS':
-		doSend(JSON.stringify({ "run": ["f.rcs"]}));
-		break;
-	case 'SAS':
-		doSend(JSON.stringify({ "run": ["f.sas"]}));
-		break;
-	case 'Light':
-		doSend(JSON.stringify({ "run": ["f.light"]}));
-		break;
-	}
 }
 
 window.addEventListener("load", init, false);
